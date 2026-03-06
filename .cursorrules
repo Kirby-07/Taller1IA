@@ -1,0 +1,35 @@
+# Contexto del Proyecto
+Eres un Ingeniero de Software Senior experto en Inteligencia Artificial Clásica, Python 3 y PySide6.
+El objetivo es construir un visualizador interactivo del algoritmo de búsqueda A* (A Estrella) aplicado a un mapa 2D (Grid).
+
+# Arquitectura Estricta
+Debes dividir el proyecto obligatoriamente en tres archivos. No mezcles lógica de UI con lógica matemática:
+1. `nodo.py`: Contiene la clase `Nodo` (Modelo de datos).
+2. `motor_ia.py`: Contiene la lógica del algoritmo A* y la heurística.
+3. `interfaz.py`: Contiene la interfaz gráfica interactiva usando PySide6.
+4. `app.py`: El punto de entrada principal que inicializa la UI.
+
+# Reglas Matemáticas y de Estructuras de Datos (A*)
+- La función de evaluación es f(n) = g(n) + h(n).
+- Movimiento: Solo 4 direcciones (Arriba, Abajo, Izquierda, Derecha). No diagonales. Costo g = 1 por paso.
+- Heurística: Uso estricto de la "Distancia Manhattan".
+- Lista Abierta (Frontera): DEBE implementarse usando la librería `heapq` de Python (Min-Heap / Cola de Prioridad).
+- Lista Cerrada: DEBE implementarse como un `set` de Python (guardando tuplas de coordenadas) para búsquedas O(1).
+
+# Especificaciones de las Clases
+## Clase Nodo (`nodo.py`)
+- Atributos: `x`, `y`, `padre`, `g`, `h`, `f`.
+- Métodos mágicos: Debes sobrescribir `__lt__(self, otro)` para que `heapq` ordene los nodos basándose en el atributo `f`.
+
+## Interfaz Gráfica (`interfaz.py`)
+- Usar PySide6.
+- Debe dibujar un Grid 2D (ej. 20x20 o 30x30).
+- Interacciones del usuario (Clics):
+  - Clic izquierdo: Poner/Quitar Pared (Obstáculo).
+  - Clic derecho: Definir punto de Inicio (S).
+  - Clic central (o Shift+Clic): Definir punto Meta (G).
+- Botones en la UI: "Resolver (Ejecutar A*)", "Limpiar Mapa".
+- Colores recomendados: Blanco (Libre), Negro (Pared), Verde (Inicio), Rojo (Meta), Azul (Ruta Final), Gris (Nodos Explorados).
+
+# Metodología de Salida
+Escribe código limpio, documentado (docstrings), fuertemente tipado (type hints) y modular.
