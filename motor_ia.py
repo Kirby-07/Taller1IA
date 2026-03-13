@@ -1,5 +1,5 @@
-import heapq
-from typing import List, Tuple, Set, Dict
+import heapq #Libreria para la cola de prioridad
+from typing import List, Tuple, Set, Dict #Se importa typing para la declaración fija de las variables, 
 from nodo import Nodo
 
 def heuristica_manhattan(x1: int, y1: int, x2: int, y2: int) -> float:
@@ -10,6 +10,8 @@ def obtener_vecinos(actual: Nodo, ancho: int, alto: int, paredes: Set[Tuple[int,
     """Obtiene vecinos válidos (arriba, abajo, izquierda, derecha) que no sean paredes."""
     vecinos_validos = []
     # Movimientos permitidos: Arriba, Abajo, Izquierda, Derecha. Costo de paso = 1.
+    # Si se agregan distancias en diagonales, ya pasarían a ser distancias euclidianas,
+    # Estas se pondrían como tuplas (1,sqrt(1) ya que la distancia que se mueve es en diagonal y al hacer el calculo de la hipotenusa da sqrt(2) )
     direcciones = [(0, -1), (0, 1), (-1, 0), (1, 0)]
     
     for dx, dy in direcciones:
@@ -41,8 +43,9 @@ def resolver_a_estrella(inicio_pos: Tuple[int, int], meta_pos: Tuple[int, int],
     
     # Hash map para almacenar el costo G más eficiente conocido hacia un nodo particular
     costos_g: Dict[Tuple[int, int], float] = {inicio_pos: 0.0}
+    # Dict es para establecer que va a ser una nueva lista de claves-valor
     
-    while lista_abierta:
+    while lista_abierta: # Mientras la frontera no esté vacía
         # Extraemos el nodo con el menor F
         nodo_actual = heapq.heappop(lista_abierta)
         pos_actual = nodo_actual.posicion
@@ -57,14 +60,18 @@ def resolver_a_estrella(inicio_pos: Tuple[int, int], meta_pos: Tuple[int, int],
             return ruta[::-1], lista_cerrada
             
         # Añadir la posición al Set de cerrados para evitar reexploración O(1)
-        lista_cerrada.add(pos_actual)
+        lista_cerrada.add(pos_actual) # Equivalente a -> HashSet.add(pos_actual en java)
+        """Un HashSet es una estructura de datos basada en una tabla hash 
+        que almacena elementos únicos (sin duplicados) y no garantiza el 
+        orden de los elementos.
+        """
         
         # Exploración de nodos adyacentes
         for nx, ny in obtener_vecinos(nodo_actual, ancho, alto, paredes):
             vecino_pos = (nx, ny)
             
             # Si el vecino ya está cerrado, lo ignoramos
-            if vecino_pos in lista_cerrada:
+            if vecino_pos in lista_cerrada: #Este primer if dice que si el vecino está en la lista cerrada lo ignore, esto es eficiente para no iterar nuevas posiciones
                 continue
                 
             nuevo_costo_g = nodo_actual.g + 1.0  # Debido a que moverse en grid vale 1
@@ -79,7 +86,8 @@ def resolver_a_estrella(inicio_pos: Tuple[int, int], meta_pos: Tuple[int, int],
                 vecino_nodo.h = heuristica_manhattan(nx, ny, meta_pos[0], meta_pos[1])
                 vecino_nodo.f = vecino_nodo.g + vecino_nodo.h
                 
-                heapq.heappush(lista_abierta, vecino_nodo)
+                heapq.heappush(lista_abierta, vecino_nodo)  #Es un algoritmo de arbol binario que inserta el elemento
+                                                            #y lo hace estar al principio de la lista basandose en el metodo __lt__
                 
     # Retorna listas vacías en caso de no hallar ruta
     return [], lista_cerrada
